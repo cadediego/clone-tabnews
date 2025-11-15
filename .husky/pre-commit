@@ -1,4 +1,4 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
 
-npx gitleaks protect --staged --verbose || exit 1
+# Bloqueia commits com secrets
+gitleaks protect --staged --verbose || exit 1
