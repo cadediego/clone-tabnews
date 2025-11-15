@@ -45,9 +45,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Gitleaks with custom config
-        uses: gitleaks/gitleaks-action@v2
+        uses: zricethezav/gitleaks-action@v2
         with:
-          config: .gitleaks.toml
-          source: .
-          verbose: true
-          no-banner: true
+          args: detect --source . --config .gitleaks.toml --verbose --no-banner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
