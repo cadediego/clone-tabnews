@@ -10,6 +10,9 @@ export default async function migrations(request, response) {
     });
   }
 
+  const API_KEY = 123459;
+  console.log(API_KEY);
+
   let dbClient;
 
   try {

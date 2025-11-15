@@ -1,12 +1,10 @@
-# Gitleaks custom config file
-title = "Custom Secrets Detection"
+title = "Custom Gitleaks Rules"
 
 # ========================
 # ALLOWLISTS (IGNORES)
 # ========================
-
-[[allowlist]]
-description = "Ignore node_modules and build directories"
+[allowlist]
+description = "Paths, regexes, and files to ignore"
 paths = [
   "node_modules/",
   "dist/",
@@ -15,26 +13,21 @@ paths = [
   "storybook-static/"
 ]
 
-[[allowlist]]
-description = "Ignore test data and mock files"
 regexes = [
+  # Ignora arquivos com nomes de teste/mocks
   ".*test.*",
   ".*mock.*",
-  ".*fixture.*"
-]
-
-[[allowlist]]
-description = "Ignore package-lock and yarn lock"
-paths = [
-  "package-lock.json",
-  "yarn.lock",
+  ".*fixture.*",
+  # Ignorar lockfiles
+  "package-lock\\.json",
+  "yarn\\.lock",
 ]
 
 # ========================
 # MAIN RULES
 # ========================
 
-# Custom catch for API keys with simple pattern
+# Generic key patterns
 [[rules]]
 id = "generic-api-key"
 description = "Generic API Key pattern"
@@ -58,7 +51,7 @@ regex = '''(?i)aws(.{0,20})?(?-i)['"][0-9a-zA-Z/+]{40}['"]'''
 severity = "high"
 keywords = ["aws_secret_access_key"]
 
-# Google API key
+# Google API Key
 [[rules]]
 id = "google-api-key"
 description = "Google API Key"
@@ -98,7 +91,7 @@ regex = '''-----BEGIN(?: RSA)? PRIVATE KEY-----'''
 severity = "critical"
 keywords = ["BEGIN PRIVATE KEY", "BEGIN RSA PRIVATE KEY"]
 
-# Generic JWT token
+# JSON Web Token
 [[rules]]
 id = "jwt"
 description = "JSON Web Token"
@@ -114,7 +107,7 @@ regex = '''(?i)(password|pwd|passphrase)\s*[:=]\s*['"][^'"]+['"]'''
 severity = "high"
 keywords = ["password", "pwd"]
 
-# Docker registry credentials in URLs
+# Credential in URL
 [[rules]]
 id = "credential-in-url"
 description = "URL with credentials"

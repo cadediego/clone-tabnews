@@ -5,8 +5,6 @@ beforeAll(async () => {
   await orchestrator.waitforAllServices();
   await database.query("DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC");
 });
-const API_KEY = 123459;
-console.log(API_KEY);
 
 test("GET to /api/v1/migrations should return 200", async () => {
   const response = await fetch("http://localhost:3000/api/v1/migrations");
