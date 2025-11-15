@@ -1,4 +1,5 @@
 #!/bin/sh
+git pull || true
 
 # Bloqueia commits com secrets
 gitleaks protect --staged --verbose --config .gitleaks.toml || exit 1
