@@ -1,0 +1,127 @@
+# Gitleaks custom config file
+title = "Custom Secrets Detection"
+
+# ========================
+# ALLOWLISTS (IGNORES)
+# ========================
+
+[[allowlist]]
+description = "Ignore node_modules and build directories"
+paths = [
+  "node_modules/",
+  "dist/",
+  "build/",
+  "coverage/",
+  "storybook-static/"
+]
+
+[[allowlist]]
+description = "Ignore test data and mock files"
+regexes = [
+  ".*test.*",
+  ".*mock.*",
+  ".*fixture.*"
+]
+
+[[allowlist]]
+description = "Ignore package-lock and yarn lock"
+paths = [
+  "package-lock.json",
+  "yarn.lock",
+]
+
+# ========================
+# MAIN RULES
+# ========================
+
+# Custom catch for API keys with simple pattern
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key pattern"
+regex = '''(?i)(api[_-]?key|secret[_-]?key)\s*[:=]\s*['"]?[A-Za-z0-9_\-]{8,}['"]?'''
+severity = "high"
+keywords = ["api_key", "secret_key"]
+
+# AWS Access Key
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key"
+regex = '''((A3T[A-Z0-9]|AKIA|ASIA)[A-Z0-9]{16})'''
+severity = "high"
+keywords = ["AKIA", "ASIA"]
+
+# AWS Secret Key
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Key"
+regex = '''(?i)aws(.{0,20})?(?-i)['"][0-9a-zA-Z/+]{40}['"]'''
+severity = "high"
+keywords = ["aws_secret_access_key"]
+
+# Google API key
+[[rules]]
+id = "google-api-key"
+description = "Google API Key"
+regex = '''AIza[0-9A-Za-z\-_]{35}'''
+severity = "high"
+keywords = ["AIza"]
+
+# Stripe secret key
+[[rules]]
+id = "stripe-secret-key"
+description = "Stripe Secret Key"
+regex = '''sk_live_[0-9a-zA-Z]{24}'''
+severity = "high"
+keywords = ["sk_live"]
+
+# GitHub token
+[[rules]]
+id = "github-token"
+description = "GitHub Token"
+regex = '''gh[pousr]_[A-Za-z0-9_]{36,255}'''
+severity = "high"
+keywords = ["ghp_", "gho_"]
+
+# Slack token
+[[rules]]
+id = "slack-token"
+description = "Slack Token"
+regex = '''xox[baprs]-[0-9]+-[0-9]+-[0-9A-Za-z]+'''
+severity = "high"
+keywords = ["xoxb", "xoxa", "xoxp"]
+
+# Private key
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN(?: RSA)? PRIVATE KEY-----'''
+severity = "critical"
+keywords = ["BEGIN PRIVATE KEY", "BEGIN RSA PRIVATE KEY"]
+
+# Generic JWT token
+[[rules]]
+id = "jwt"
+description = "JSON Web Token"
+regex = '''eyJ[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+'''
+severity = "high"
+keywords = ["eyJ"]
+
+# Password assignment
+[[rules]]
+id = "password-variable"
+description = "Password-like variable"
+regex = '''(?i)(password|pwd|passphrase)\s*[:=]\s*['"][^'"]+['"]'''
+severity = "high"
+keywords = ["password", "pwd"]
+
+# Docker registry credentials in URLs
+[[rules]]
+id = "credential-in-url"
+description = "URL with credentials"
+regex = '''[A-Za-z]+:\/\/[^:@\s]+:[^@\s]+@'''
+severity = "high"
+keywords = ["http://", "https://"]
+
+# ========================
+# END
+# ========================
