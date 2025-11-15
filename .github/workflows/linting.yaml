@@ -44,14 +44,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Gitleaks
-        run: |
-          LATEST=$(curl -sSL https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep tag_name | cut -d '"' -f 4)
-          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/$LATEST/gitleaks_$LATEST_linux_x64.tar.gz -o gitleaks.tar.gz
-          tar -xzf gitleaks.tar.gz
-          chmod +x gitleaks
-          sudo mv gitleaks /usr/local/bin/
-
       - name: Run Gitleaks with custom config
-        run: |
-          gitleaks detect --source . --config .gitleaks.toml --no-banner --verbose
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          config: .gitleaks.toml
+          source: .
+          verbose: true
+          no-banner: true
