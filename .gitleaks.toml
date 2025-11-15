@@ -30,8 +30,8 @@ regexes = [
 # Generic key patterns
 [[rules]]
 id = "generic-api-key"
-description = "Generic API Key pattern"
-regex = '''(?i)(api[_-]?key|secret[_-]?key)\s*[:=]\s*['"]?[A-Za-z0-9_\-]{8,}['"]?'''
+description = "Catch any assignment to API_KEY or SECRET_KEY"
+regex = '''(?i)(api[_-]?key|secret[_-]?key)\s*[:=]\s*[^;\n]+'''
 severity = "high"
 keywords = ["api_key", "secret_key"]
 
