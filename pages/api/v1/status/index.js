@@ -31,8 +31,10 @@ async function status(request, response) {
     const publicErrorObject = new InternalServerError({
       cause: error,
     });
-    console.log("Error dentro do catch do controller");
-    console.log(publicErrorObject);
+
+    console.log("\n Erro dentro do catch do controller:");
+    console.error(publicErrorObject);
+
     response.status(500).json(publicErrorObject);
   }
 }
