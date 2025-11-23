@@ -55,3 +55,23 @@ export class MethodNotAllowedError extends Error {
     };
   }
 }
+
+export class ValidationError extends Error {
+  constructor({ cause, action, message }) {
+    super(message || "Um erro de validação aconteceu", {
+      cause,
+    });
+    this.name = "ValidationError";
+    this.action = action || "tente novamente";
+    this.statusCode = 400;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}
