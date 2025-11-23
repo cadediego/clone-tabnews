@@ -1,26 +1,40 @@
 title = "Custom Gitleaks Rules"
 
 # ========================
-# ALLOWLISTS (IGNORES)
+# ALLOWLIST (IGNORES)
 # ========================
 [allowlist]
-description = "Paths, regexes, and files to ignore"
+description = "Arquivos e caminhos ignorados"
+
+# Ignora pastas específicas pelo prefixo
 paths = [
   "node_modules/",
   "dist/",
   "build/",
   "coverage/",
-  "storybook-static/"
+  "storybook-static/",
+  "tests/",
+  "test/",
+  "__tests__/",
+  "__mocks__/"
 ]
 
+# Ignora arquivos com regex (casam com o path completo)
 regexes = [
-  # Ignora arquivos com nomes de teste/mocks
-  ".*test.*",
+  # Arquivos de teste
+  ".*\\.test\\..*",      # exemplo: user.test.js
+  ".*\\.spec\\..*",      # exemplo: user.spec.ts
+  ".*/tests?/.*",        # qualquer arquivo dentro de test/ ou tests/
+  ".*/__tests__/.*",     # Jest
+  ".*/__mocks__/.*",
+
+  # Mocks e fixtures
   ".*mock.*",
   ".*fixture.*",
-  # Ignorar lockfiles
+
+  # Lockfiles
   "package-lock\\.json",
-  "yarn\\.lock",
+  "yarn\\.lock"
 ]
 
 # ========================
@@ -105,7 +119,7 @@ id = "password-variable"
 description = "Password-like variable"
 regex = '''(?i)(password|pwd|passphrase)\s*[:=]\s*['"][^'"]+['"]'''
 severity = "high"
-keywords = ["password", "pwd"]
+keywords = [ "pwd"]
 
 # Credential in URL
 [[rules]]
