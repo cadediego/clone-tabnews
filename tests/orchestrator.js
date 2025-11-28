@@ -1,6 +1,8 @@
 import retry from "async-retry";
 import database from "infra/database";
 import migrator from "models/migrator";
+import user from "models/user.js";
+import { faker } from "@faker-js/faker";
 
 async function runPendingMigrations() {
   await migrator.runPendingMigrations();
@@ -23,6 +25,15 @@ async function waitforAllServices() {
   }
 }
 
+async function createUser(userObject) {
+  return await user.create({
+    username:
+      userObject?.username || faker.internet.username().replace(/[_.-]/g, ""),
+    email: userObject?.email || faker.internet.email(),
+    password: userObject?.password || "validpassword",
+  });
+}
+
 async function clearDatabase() {
   await database.query("DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC");
 }
@@ -31,5 +42,6 @@ const orchestrator = {
   waitforAllServices,
   clearDatabase,
   runPendingMigrations,
+  createUser,
 };
 export default orchestrator;
