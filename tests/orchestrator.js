@@ -2,6 +2,7 @@ import retry from "async-retry";
 import database from "infra/database";
 import migrator from "models/migrator";
 import user from "models/user.js";
+import session from "models/session.js";
 import { faker } from "@faker-js/faker";
 
 async function runPendingMigrations() {
@@ -34,6 +35,10 @@ async function createUser(userObject) {
   });
 }
 
+async function createSession(userId) {
+  return await session.create(userId);
+}
+
 async function clearDatabase() {
   await database.query("DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC");
 }
@@ -43,5 +48,6 @@ const orchestrator = {
   clearDatabase,
   runPendingMigrations,
   createUser,
+  createSession,
 };
 export default orchestrator;

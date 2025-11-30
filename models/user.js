@@ -32,6 +32,36 @@ async function findOneByusername(username) {
   }
 }
 
+async function findOneById(id) {
+  const userfound = await runSelectQuery(id);
+  return userfound;
+  async function runSelectQuery(id) {
+    const results = await database.query({
+      text: `
+      SELECT
+        * 
+      FROM 
+        users 
+      where
+        id  =  $1
+      limit 
+        1
+  
+    
+      `,
+      values: [id],
+    });
+
+    if (results.rowCount === 0) {
+      throw new NotFoundError({
+        message: "o id informado nao foi encontrado no sistema",
+        action: "verifique se o id está digitado corretamente",
+      });
+    }
+    return results.rows[0];
+  }
+}
+
 async function findOneByemail(email) {
   const userfound = await runSelectQuery(email);
   return userfound;
@@ -204,5 +234,6 @@ const user = {
   findOneByemail,
   update,
   runUpdateQuery,
+  findOneById,
 };
 export default user;
