@@ -5,11 +5,9 @@ import password from "models/password.js";
 async function findOneByusername(username) {
   const userfound = await runSelectQuery(username);
   return userfound;
-}
-
-async function runSelectQuery(username) {
-  const results = await database.query({
-    text: `
+  async function runSelectQuery(username) {
+    const results = await database.query({
+      text: `
       SELECT
         * 
       FROM 
@@ -21,16 +19,47 @@ async function runSelectQuery(username) {
   
     
       `,
-    values: [username],
-  });
-
-  if (results.rowCount === 0) {
-    throw new NotFoundError({
-      message: "o usarname informado nao foi encontrado no sistema",
-      action: "verifique se o username está digitado corretamente",
+      values: [username],
     });
+
+    if (results.rowCount === 0) {
+      throw new NotFoundError({
+        message: "o usarname informado nao foi encontrado no sistema",
+        action: "verifique se o username está digitado corretamente",
+      });
+    }
+    return results.rows[0];
   }
-  return results.rows[0];
+}
+
+async function findOneByemail(email) {
+  const userfound = await runSelectQuery(email);
+  return userfound;
+  async function runSelectQuery(email) {
+    const results = await database.query({
+      text: `
+      SELECT
+        * 
+      FROM 
+        users 
+      where
+        lower(email)  =  lower($1)
+      limit 
+        1
+  
+    
+      `,
+      values: [email],
+    });
+
+    if (results.rowCount === 0) {
+      throw new NotFoundError({
+        message: "o email informado nao foi encontrado no sistema",
+        action: "verifique se o email está digitado corretamente",
+      });
+    }
+    return results.rows[0];
+  }
 }
 
 async function create(userInputValues) {
@@ -172,6 +201,7 @@ async function hashPasswordInObject(userInputValues) {
 const user = {
   create,
   findOneByusername,
+  findOneByemail,
   update,
   runUpdateQuery,
 };
