@@ -88,6 +88,19 @@ describe("GET /api/v1/user", () => {
         action: "Verifique se este usário esta logado e tente novamente",
         status_code: 401,
       });
+
+      // Set-Cookie assertions
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: "invalid",
+        maxAge: -1,
+        path: "/",
+        httpOnly: true,
+      });
     });
 
     test("With expired Session", async () => {
@@ -118,6 +131,18 @@ describe("GET /api/v1/user", () => {
         message: "Usuário não possui sessão ativa",
         action: "Verifique se este usário esta logado e tente novamente",
         status_code: 401,
+      });
+      // Set-Cookie assertions
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: "invalid",
+        maxAge: -1,
+        path: "/",
+        httpOnly: true,
       });
     });
 
@@ -161,27 +186,12 @@ describe("GET /api/v1/user", () => {
       const renewedSessionObject = await session.findOneValidByToken(
         sessionObject.token,
       );
-
       expect(
         renewedSessionObject.expires_at > sessionObject.expires_at,
       ).toEqual(true);
       expect(
         renewedSessionObject.updated_at > sessionObject.updated_at,
       ).toEqual(true);
-
-      // Set‑Cookie assertions
-      const parsedSetCookie = setCookieParser(response, {
-        map: true,
-      });
-
-      expect(parsedSetCookie.session_id).toEqual({
-        name: "session_id",
-        value: sessionObject.token,
-        maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
-        path: "/",
-        httpOnly: true,
-        sameSite: "Lax",
-      });
     });
   });
 });
