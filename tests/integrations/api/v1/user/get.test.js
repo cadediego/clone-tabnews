@@ -1,11 +1,7 @@
-import password from "models/password.js";
 import setCookieParser from "set-cookie-parser";
-
 import orchestrator from "tests/orchestrator.js";
-import user from "models/user.js";
 import session from "models/session.js";
 import { version as uuidVersion } from "uuid";
-import { UnauthorizedError } from "infra/errors";
 
 beforeAll(async () => {
   await orchestrator.waitforAllServices();
@@ -29,6 +25,12 @@ describe("GET /api/v1/user", () => {
       });
 
       expect(response.status).toBe(200);
+
+      const cacheControl = response.headers.get("Cache-Control");
+      expect(cacheControl).toBe(
+        "no-store, no-cache, max-age=0, must-revalidate",
+      );
+
       const responseBody = await response.json();
       expect(responseBody).toEqual({
         id: createdUser.id,
