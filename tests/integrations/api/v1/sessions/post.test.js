@@ -2,6 +2,7 @@ import orchestrator from "tests/orchestrator.js";
 import { version as uuidVersion } from "uuid";
 import session from "models/session.js";
 import setCookieParser from "set-cookie-parser";
+import activation from "models/activation.js";
 
 beforeAll(async () => {
   await orchestrator.waitforAllServices();
@@ -91,10 +92,12 @@ describe("POST /api/v1/sessions", () => {
     });
 
     test("With correct  `email` and correct `password`", async () => {
-      const createUser = await orchestrator.createUser({
+      const createdUser = await orchestrator.createUser({
         email: "tudo.correto@gmail.com",
         password: "senha-correta",
       });
+
+      await orchestrator.activateUser(createdUser);
 
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "POST",
@@ -113,7 +116,7 @@ describe("POST /api/v1/sessions", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         token: responseBody.token,
-        user_id: createUser.id,
+        user_id: createdUser.id,
         expires_at: responseBody.expires_at,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,

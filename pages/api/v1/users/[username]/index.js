@@ -3,7 +3,6 @@ import controller from "infra/controller.js";
 import user from "models/user.js";
 
 const router = createRouter();
-
 router.get(getHandler);
 router.patch(patchHandler);
 export default router.handler(controller.errorHandlers);
